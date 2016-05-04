@@ -13,7 +13,11 @@ module Coupons
 
     def self.dump(attachments)
       attachments = attachments.each_with_object({}) do |(key, record), buffer|
-        buffer[key] = record.to_global_id.to_s
+        if record.respond_to? :to_global_id
+          buffer[key] = record.to_global_id.to_s
+        else
+          buffer[key] = record
+        end
       end
 
       JSON.dump(attachments)
