@@ -5,7 +5,7 @@ module Coupons
       attachments = JSON.load(attachments)
 
       attachments.each_with_object({}) do |(key, uri), buffer|
-        buffer[key.to_sym] = if(!uri.nil?() && uri.start_with?("gid://"))
+        buffer[key.to_sym] = if(uri.kind_of?(String) && uri.start_with?("gid://"))
           GlobalID::Locator
                 .locate_many([uri], ignore_missing: true)
                 .first
