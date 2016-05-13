@@ -39,12 +39,16 @@ module Coupons
 
       validate :validate_dates
 
-      def apply(options)
+      def process_discount(options)
         input_amount = BigDecimal("#{options[:amount]}")
         discount = BigDecimal(percentage_based? ? percentage_discount(options[:amount]) : amount)
         total = [0, input_amount - discount].max
 
         options = options.merge(total: total, discount: discount)
+      end
+
+      def apply(options)
+        options = process_discount(options)
 
         options = Coupons.configuration.resolvers.reduce(options) do |options, resolver|
           resolver.resolve(self, options)
